@@ -66,8 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         body {
             height: 100vh;
-            background: linear-gradient(135deg, #166534, #22c55e);
-            /* FONDO ORIGINAL SE MANTIENE */
+            background: linear-gradient(135deg, #027737, #84cca1);
             display: flex;
             justify-content: center;
             align-items: center;
