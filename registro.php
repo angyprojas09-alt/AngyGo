@@ -1,5 +1,5 @@
 <?php
-include("conexion.php");
+require_once("conexion.php");
 
 $mensaje = "";
 $error = "";
@@ -10,43 +10,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = trim($_POST["correo"] ?? '');
     $password_raw = $_POST["password"] ?? '';
 
+    // Validar campos vacíos
     if ($nombre === '' || $correo === '' || $password_raw === '') {
         $error = 'Completa todos los campos.';
+    }
+    // Validar formato de correo
+    elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Correo electrónico no válido.';
+    }
+    // Validar contraseña mínima
+    elseif (strlen($password_raw) < 6) {
+        $error = 'La contraseña debe tener al menos 6 caracteres.';
     } else {
+
+        // Verificar si ya existe el correo
         $check = $conexion->prepare("SELECT id FROM usuarios WHERE correo = ? LIMIT 1");
+
         if ($check) {
+
             $check->bind_param('s', $correo);
             $check->execute();
             $res = $check->get_result();
+
             if ($res && $res->num_rows > 0) {
                 $error = 'Ya existe una cuenta con ese correo.';
             }
+
             $check->close();
         } else {
             $error = 'Error en la verificación de correo.';
         }
-    }
 
-    if ($error === '') {
-        $password = password_hash($password_raw, PASSWORD_DEFAULT);
-        $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)");
-        if ($stmt) {
-            $stmt->bind_param('sss', $nombre, $correo, $password);
-            if ($stmt->execute()) {
+        // Si no hay error, registrar
+        if ($error === '') {
+
+            $password = password_hash($password_raw, PASSWORD_DEFAULT);
+
+            $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)");
+
+            if ($stmt) {
+
+                $stmt->bind_param('sss', $nombre, $correo, $password);
+
+                if ($stmt->execute()) {
+
+                    $stmt->close();
+
+                    header('Location: enviar_token.php?correo=' . urlencode($correo));
+                    exit();
+                } else {
+                    $error = 'Error al registrar: ' . $stmt->error;
+                }
+
                 $stmt->close();
-                $conexion->close();
-                header('Location: enviar_token.php?correo=' . urlencode($correo));
-                exit();
             } else {
-                $error = 'Error al registrar: ' . $stmt->error;
+                $error = 'Error en la consulta de registro.';
             }
-            $stmt->close();
-        } else {
-            $error = 'Error en la consulta de registro.';
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

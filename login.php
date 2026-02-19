@@ -1,32 +1,73 @@
 <?php
 session_start();
-include("conexion.php");
+require_once("conexion.php");
 
 $error = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $correo = $_POST["correo"];
-    $password = $_POST["password"];
+    $correo = trim($_POST["correo"] ?? '');
+    $password = $_POST["password"] ?? '';
 
-    $sql = "SELECT * FROM usuarios WHERE correo='$correo'";
-    $resultado = $conexion->query($sql);
-
-    if ($resultado->num_rows > 0) {
-        $usuario = $resultado->fetch_assoc();
-
-        if (password_verify($password, $usuario["password"])) {
-            $_SESSION["usuario"] = $usuario["nombre"];
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "Contraseña incorrecta";
-        }
+    if (empty($correo) || empty($password)) {
+        $error = "Completa todos los campos";
     } else {
-        $error = "Usuario no encontrado";
+
+        $stmt = $conexion->prepare("SELECT id, nombre, password, rol FROM usuarios WHERE correo = ? LIMIT 1");
+
+        if (!$stmt) {
+            die("Error en la consulta: " . $conexion->error);
+        }
+
+        $stmt->bind_param("s", $correo);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows === 1) {
+
+            $usuario = $resultado->fetch_assoc();
+
+            if (password_verify($password, $usuario["password"])) {
+
+                // Seguridad extra
+                session_regenerate_id(true);
+
+                // ===============================
+                // GUARDAR SESIÓN CORRECTAMENTE
+                // ===============================
+                $_SESSION["usuario_id"] = $usuario["id"];
+                $_SESSION["nombre"]     = $usuario["nombre"]; // 👈 IMPORTANTE
+                $_SESSION["rol"]        = $usuario["rol"];
+
+                // Redirección por rol
+                switch ($usuario["rol"]) {
+                    case "admin":
+                        header("Location: panel_admin.php");
+                        break;
+
+                    case "domiciliario":
+                        header("Location: panel_domiciliario.php");
+                        break;
+
+                    default:
+                        header("Location: index.php");
+                        break;
+                }
+
+                exit();
+            } else {
+                $error = "Contraseña incorrecta";
+            }
+        } else {
+            $error = "Usuario no encontrado";
+        }
+
+        $stmt->close();
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="es">

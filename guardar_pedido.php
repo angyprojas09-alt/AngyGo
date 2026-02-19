@@ -8,9 +8,17 @@ $conexion->set_charset("utf8mb4");
 $ok = false;
 $error = "";
 
+// 🔐 Verificar sesión activa
+if (!isset($_SESSION["usuario_id"])) {
+  header("Location: login.php");
+  exit();
+}
+
+$usuario_id = $_SESSION["usuario_id"];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-  $nombre = trim($_POST['nombre'] ?? ($_SESSION['usuario'] ?? 'Cliente'));
+  $nombre = trim($_POST['nombre'] ?? $_SESSION['usuario']);
   $telefono = trim($_POST['telefono'] ?? '');
   $direccion = trim($_POST['direccion'] ?? '');
   $producto = trim($_POST['producto'] ?? '');
@@ -22,15 +30,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit();
   }
 
+  // ✅ Insertar incluyendo usuario_id
   $stmt = $conexion->prepare(
-    "INSERT INTO pedidos (nombre, telefono, direccion, producto, cantidad, comentarios)
-     VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO pedidos (usuario_id, nombre, telefono, direccion, producto, cantidad, comentarios)
+     VALUES (?, ?, ?, ?, ?, ?, ?)"
   );
 
   if ($stmt) {
-    $stmt->bind_param("ssssis", $nombre, $telefono, $direccion, $producto, $cantidad, $comentarios);
+
+    $stmt->bind_param("issssis", $usuario_id, $nombre, $telefono, $direccion, $producto, $cantidad, $comentarios);
 
     if ($stmt->execute()) {
+
       $lastId = $conexion->insert_id;
       header("Location: guardar_pedido.php?pedido_id=" . $lastId);
       exit();
@@ -46,12 +57,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $id = (int)$_GET['pedido_id'];
 
-  $stmt = $conexion->prepare("SELECT * FROM pedidos WHERE id = ? LIMIT 1");
-  $stmt->bind_param("i", $id);
+  // 🔐 Solo permitir ver pedidos del usuario logueado
+  $stmt = $conexion->prepare("SELECT * FROM pedidos WHERE id = ? AND usuario_id = ? LIMIT 1");
+  $stmt->bind_param("ii", $id, $usuario_id);
   $stmt->execute();
   $resultado = $stmt->get_result();
 
   if ($resultado->num_rows > 0) {
+
     $pedido = $resultado->fetch_assoc();
     $ok = true;
 
@@ -62,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cantidad = $pedido['cantidad'];
     $comentarios = $pedido['comentarios'];
   } else {
-    $error = "Pedido no encontrado.";
+    $error = "Pedido no encontrado o no autorizado.";
   }
 
   $stmt->close();
@@ -72,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

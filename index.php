@@ -2,11 +2,18 @@
 session_start();
 
 // 🔐 Proteger la página
-if (!isset($_SESSION["usuario"])) {
+if (!isset($_SESSION["usuario_id"])) {
   header("Location: login.php");
   exit();
 }
+
+// ✅ Tomar correctamente el nombre de sesión
+$usuario = $_SESSION["nombre"] ?? ($_SESSION["usuario"] ?? "Usuario");
+$rol = $_SESSION["rol"] ?? "cliente";
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -373,7 +380,7 @@ if (!isset($_SESSION["usuario"])) {
 
   <section class="contacto" id="contacto">
     <h2>Contáctanos</h2>
-    <p>👤 Usuario: <strong><?php echo htmlspecialchars($_SESSION["usuario"]); ?></strong></p>
+    <p>👤 Usuario: <strong><?php echo htmlspecialchars($usuario); ?></strong></p>
     <p>📱 WhatsApp: <a href="#">+57 304 525 7674</a></p>
     <p>📧 Correo: <a href="mailto:angygo916@gmail.com.com">angygo916@gmail.com</a></p>
     <p>📍 Ciudad: Socorro, Colombia</p>
@@ -382,12 +389,14 @@ if (!isset($_SESSION["usuario"])) {
       <h3>📋 Realiza tu Pedido</h3>
 
       <div class="bienvenida">
-        Bienvenida <?php echo htmlspecialchars($_SESSION["usuario"]); ?> 👋
+        Bienvenida <?php echo htmlspecialchars($usuario); ?> 👋
       </div>
 
       <form action="guardar_pedido.php" method="POST" onsubmit="return disableSubmit(this);">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Ej: Nombre y Apellido" value="<?php echo htmlspecialchars($_SESSION["usuario"]); ?>" required>
+        <input type="text" id="nombre" name="nombre"
+          value="<?php echo htmlspecialchars($usuario); ?>" required>
+
 
         <label for="telefono">Teléfono</label>
         <input type="tel" id="telefono" name="telefono" placeholder="Ej: 3001234567" required>
