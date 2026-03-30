@@ -46,10 +46,9 @@ Desarrollada con **PHP 8+, MySQL y HTML/CSS/JS puro**. Funciona perfectamente en
 
 ## 📸 Capturas de Pantalla
 
-| Cliente (index.php) | Login | Panel Admin |
+| Cliente (index.php) | panel Domi| Panel Admin |
 |--------------------|--------|-------------|
 | ![Cliente](imagenAngyGo/logo.png) | ![Login](imagenes/panel_domi.jpeg) | ![Admin](imagenes/panel_adm.jpeg) |
-
 
 
 ## 🛠️ Requisitos Previos
