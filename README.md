@@ -48,9 +48,9 @@ Desarrollada con **PHP 8+, MySQL y HTML/CSS/JS puro**. Funciona perfectamente en
 
 | Cliente (index.php) | Login | Panel Admin |
 |--------------------|--------|-------------|
-| ![Cliente](imagenAngyGo/logo.png) | ![Login](login.png) | ![Admin](panel_admin.png) |
+| ![Cliente](imagenAngyGo/logo.png) | ![Login](imagen.md/panel_domi.jpeg) | ![Admin](panel_admin.png) |
 
-*(Agregar capturas reales recomendadas)*
+
 
 ## 🛠️ Requisitos Previos
 
