@@ -1,281 +1,165 @@
-# 🚴‍♂️ AngyGo - Sistema de Domicilios
+# 🚴‍♂️ AngyGo - Servicio de Domicilios
 
-<div align="center">
+## 📱 Descripción del Proyecto
 
-![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)
-![MySQL](https://img.shields.io/badge/MySQL-10.4-4479A1?style=for-the-badge&logo=mysql)
-![License](https://img.shields.io/badge/License-SENA-blue?style=for-the-badge)
+**AngyGo** es una aplicación web completa para gestión de servicios de domicilio en Socorro, Santander (Colombia). Permite a clientes realizar pedidos de comida rápida, paquetería y compras express, que se guardan en base de datos y se envían automáticamente por WhatsApp al número del negocio.
 
-**Sistema de gestión de servicios de domicilio para Socorro, Colombia**
+Desarrollada con **PHP 8+, MySQL y HTML/CSS/JS puro**. Funciona perfectamente en **XAMPP local** o servidores web compartidos.
 
-[Características](#características) • [Requisitos](#requisitos) • [Instalación](#instalación) • [Estructura](#estructura) • [Uso](#uso) • [Licencia](#licencia)
+**Estado:** ✅ En producción con datos reales (53 pedidos, 9 usuarios).
 
-</div>
+## ✨ Características Principales
 
----
+- **🔐 Autenticación completa:**
+  - Registro de usuarios con confirmación por email (tokens)
+  - Login seguro con `password_hash()`
+  - Recuperación de contraseña por email
+  - Roles: cliente, admin, domiciliario
 
-## 📋 Descripción
+- **📦 Gestión de Pedidos:**
+  - Formulario intuitivo para clientes
+  - Almacenamiento en MySQL (`pedidos` table)
+  - Integración automática con **WhatsApp Business**
+  - Admin puede ver, asignar a domiciliarios y estadísticas
 
-**AngyGo** es una aplicación web desarrollada en PHP que ofrece servicios de domicilio en la ciudad de Socorro, Santander (Colombia). El sistema permite a los usuarios registrados realizar pedidos de comida rápida, paquetería y compras express, con integración directa a WhatsApp para la gestión de pedidos.
+- **👑 Panel Administrador:**
+  - Dashboard con métricas (total, asignados, pendientes)
+  - CRUD usuarios (crear/editar/eliminar)
+  - Vista y asignación de pedidos
+  - Últimos pedidos
 
-### 🎯 Propósito
+- **🛵 Panel Domiciliario:**
+  - Ver pedidos asignados
+  - Fácil expansión
 
-Este proyecto fue desarrollado como parte de un proyecto formativo del SENA (Servicio Nacional de Aprendizaje), permitiendo a los usuarios solicitar servicios de domicilio de manera fácil y rápida.
+- **🎨 Interfaz Moderna:**
+  - Responsive design
+  - Gradientes y animaciones
+  - Imágenes optimizadas (logo, servicios)
 
----
+- **📊 Base de Datos:**
+  ```
+  - usuarios (id, nombre, correo, password, fecha_registro)
+  - pedidos (id, nombre, telefono, direccion, producto, cantidad, comentarios, fecha)
+  - email_confirmations & password_resets (tokens seguros)
+  ```
 
-## ✨ Características
+## 📸 Capturas de Pantalla
 
-| Característica | Descripción |
-|----------------|-------------|
-| 🔐 **Autenticación** | Sistema completo de registro, login y logout |
-| 📧 **Confirmación de Email** | Validación de cuentas mediante token por correo electrónico |
-| 🔑 **Recuperación de Contraseña** | Sistema de restablecimiento de contraseña seguro con tokens |
-| 📊 **Panel de Usuario** | Dashboard personalizado con información del usuario |
-| 🛒 **Gestión de Pedidos** | Formulario de pedidos con validación y almacenamiento en BD |
-| 📱 **Integración WhatsApp** | Envío automático de pedidos al negocio vía WhatsApp |
-| 🎨 **Diseño Responsivo** | Interfaz moderna y adaptativa para todos los dispositivos |
-| 🔒 **Seguridad** | Contraseñas hasheadas con bcrypt, protección contra inyecciones SQL |
+| Cliente (index.php) | Login | Panel Admin |
+|--------------------|--------|-------------|
+| ![Cliente](imagenAngyGo/logo.png) | ![Login](login.png) | ![Admin](panel_admin.png) |
 
----
+*(Agregar capturas reales recomendadas)*
 
-## 🛠️ Requisitos
+## 🛠️ Requisitos Previos
 
-### Software Necesario
+- **XAMPP** (Apache + MySQL) o servidor PHP/MySQL
+- **PHP 8.0+**
+- **MySQL 5.7+**
+- Navegador moderno
 
-- **Servidor Web**: Apache o Nginx
-- **PHP**: Versión 8.0 o superior
-- **MySQL/MariaDB**: Versión 5.7 o superior
-- **Extensiones PHP**: 
-  - mysqli
-  - mbstring
-  - session
+## 🚀 Instalación Rápida (5 minutos)
 
-### Configuración Recomendada
+1. **Descarga/Coloca archivos:**
+   ```
+   c:/xampp/htdocs/AngyGo/
+   ```
 
-- XAMPP, WAMP, MAMP o Laragon
-- Navegador web moderno (Chrome, Firefox, Edge)
+2. **Inicia XAMPP:**
+   ```
+   Apache: START
+   MySQL: START
+   ```
 
----
+3. **Crea Base de Datos:**
+   - Abre `http://localhost/phpmyadmin`
+   - Crea DB: `angygo`
+   - Importa: `angygo.sql` (incluye datos de prueba)
 
-## 📦 Instalación
+4. **Configura Conexión (opcional):**
+   Edita `conexion.php` si cambias credenciales MySQL:
+   ```php
+   $servidor = 'localhost';
+   $usuario_db = 'root';
+   $password_db = ''; // Vacío en XAMPP por defecto
+   $nombre_db = 'angygo';
+   ```
 
-### Paso 1: Clonar o Descargar el Proyecto
+5. **¡Listo! Abre en navegador:**
+   ```
+   http://localhost/AngyGo/
+   ```
 
-Coloca los archivos en la raíz de tu servidor web:
+## 👥 Cómo Usar
 
-```bash
-# Para XAMPP
-cp -r AngyGo c:/xampp/htdocs/
-
-# Para WAMP
-cp -r AngyGo w:/www/
+### 1. **Cliente (Usuario normal)**
+```
+1. Registro/login en login.php
+2. index.php → Llena formulario pedido
+3. ¡Se envía por WhatsApp automáticamente!
 ```
 
-### Paso 2: Configurar la Base de Datos
+**Demo Usuario:** 
+- Email: `andrea09@gmail.com`
+- Pass: `123456`
 
-1. Abre phpMyAdmin (http://localhost/phpmyadmin)
-2. Crea una nueva base de datos llamada `angygo`
-3. Importa el archivo `angygo.sql`:
-
-```bash
-# Desde línea de comandos
-mysql -u root -p angygo < angygo.sql
+### 2. **Admin**
+```
+Login → panel_admin.php
+- Ver estadísticas
+- Gestionar usuarios (gestionar_usuarios.php)
+- Ver/asignar pedidos (ver_pedidos_admin.php)
 ```
 
-O desde phpMyAdmin:
-- Selecciona la base de datos `angygo`
-- Ve a la pestaña **Importar**
-- Selecciona el archivo `angygo.sql`
-- Haz clic en **Continuar**
+**Admin Demo:**
+- Email: `shibucai93@gmail.com`
+- Pass: `123456` (cambiar en producción)
 
-### Paso 3: Configurar Conexión a BD
-
-Edita el archivo `conexion.php` si es necesario:
-
-```php
-<?php
-$servidor = "localhost";
-$usuario = "root";
-$password = "";  // Tu contraseña de MySQL si la tienes
-$bd = "angygo";
-
-$conexion = new mysqli($servidor, $usuario, $password, $bd);
-// ...
-?>
+### 3. **Domiciliario**
+```
+Login → panel_domiciliario.php → pedidos_asignados.php
 ```
 
-### Paso 4: Configurar Correo (Opcional)
-
-Para que funcione el envío de emails de confirmación y recuperación:
-
-Edita los archivos correspondientes:
-- `enviar_token.php`
-- `confirmar_email.php`
-
-Configura tu servidor de correo SMTP o utiliza una librería como PHPMailer.
-
-### Paso 5: Acceder a la Aplicación
-
-Abre tu navegador y visita:
-
-```
-http://localhost/AngyGo/
-```
-
----
-
-## 📂 Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 AngyGo/
-├── 📄 index.php              # Panel principal / Dashboard
-├── 📄 login.php             # Página de inicio de sesión
-├── 📄 logout.php            # Cierre de sesión
-├── 📄 registro.php          # Formulario de registro de usuarios
-├── 📄 confirmar_email.php   # Confirmación de cuenta por email
-├── 📄 reset_password.php    # Restablecer contraseña
-├── 📄 cambiar_password.php  # Cambiar contraseña (logged in)
-├── 📄 enviar_token.php      # Enviar token de recuperación
-├── 📄 guardar_pedido.php    # Guardar y procesar pedidos
-├── 📄 conexion.php          # Conexión a la base de datos
-├── 📄 angygo.sql            # Estructura de la base de datos
-├── 📄 README.md             # Este archivo
-└── 📁 imagenAngyGo/        # Recursos gráficos e imágenes
-    ├── logo.png
-    ├── ANGYblanco.jpeg
-    ├── ANGYnegro.jpeg
-    ├── comidas rapidas.jpeg
-    ├── paqueteria.jpeg
-    ├── compras .jpeg
-    └── Imagen2.png
+├── index.php              # Formulario pedidos cliente
+├── login.php             # Autenticación
+├── registro.php          # Registro usuarios
+├── panel_admin.php       # Dashboard admin
+├── panel_domiciliario.php # Panel delivery
+├── guardar_pedido.php    # Procesar pedidos
+├── conexion.php          # DB connection
+├── angygo.sql            # Base de datos
+├── imagenAngyGo/         # Assets
+└── README.md
 ```
 
----
+## 📞 Contacto & WhatsApp
 
-## 🖥️ Uso
+**WhatsApp Negocio:** [+57 304 525 7674](https://wa.me/573045257674)
 
-### Registro de Usuario
+**Email:** angygo916@gmail.com
 
-1. Ve a `registro.php`
-2. Completa el formulario con:
-   - Nombre completo
-   - Correo electrónico
-   - Contraseña
-3. Confirma tu correo electrónico haciendo clic en el enlace enviado
+**Ubicación:** Socorro - Santander, Colombia
 
-### Iniciar Sesión
+## 🔮 Próximas Mejoras Sugeridas
 
-1. Ve a `login.php`
-2. Ingresa tu correo y contraseña
-3. Accederás al dashboard principal
-
-### Realizar un Pedido
-
-1. Inicia sesión
-2. En el dashboard, completa el formulario de pedido:
-   - Nombre
-   - Teléfono
-   - Dirección
-   - Producto
-   - Cantidad
-   - Comentarios adicionales
-3. Haz clic en "Guardar y Enviar por WhatsApp"
-4. Serás redirigido a WhatsApp con los datos del pedido
-
-### Recuperar Contraseña
-
-1. Ve a `reset_password.php`
-2. Ingresa tu correo electrónico
-3. Revisa tu correo y sigue el enlace
-4. Crea una nueva contraseña
-
----
-
-## 🔧 Configuración Adicional
-
-### Cambiar Número de WhatsApp
-
-Edita el archivo `index.php` y busca:
-
-```javascript
-const numeroWhatsApp = "3045257674";
-```
-
-Cambia el número por el deseado (sin el +).
-
-### Personalizar Colores
-
-Los estilos CSS están embebidos en `index.php`. Busca la sección `<style>` para modificar:
-
-- Colores del header
-- Fondo de la página
-- Estilos de las tarjetas
-- Colores de botones
-
-### Configuración de Sesión
-
-El archivo `conexion.php` establece la conexión a la base de datos. Asegúrate de:
-
-- Crear la base de datos `angygo`
-- Importar las tablas del archivo `angygo.sql`
-- Verificar las credenciales de acceso
-
----
-
-## 🔐 Seguridad
-
-- ✅ Contraseñas almacenadas con hash bcrypt
-- ✅ Protección contra SQL injection mediante prepared statements
-- ✅ Escape de salida con `htmlspecialchars()`
-- ✅ Sesiones seguras con configuración apropiada
-- ✅ Tokens únicos para confirmaciones y restablecimientos
-
----
-
-## 📱 Capturas de Pantalla
-
-| Vista | Descripción |
-|-------|-------------|
-| Login | Formulario de inicio de sesión con diseño moderno |
-| Registro | Formulario de registro con validación |
-| Dashboard | Panel principal con servicios y formulario de pedidos |
-| WhatsApp | Mensaje formateado con los datos del pedido |
-
----
-
-## 🤝 Contribuir
-
-1. Haz un fork del proyecto
-2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
-3. Commitea tus cambios (`git commit -m 'Agrega nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abre un Pull Request
-
----
+- [ ] Mapa con Google Maps para direcciones
+- [ ] Notificaciones push/email
+- [ ] Pagos en línea (PayU/MercadoPago)
+- [ ] App móvil (React Native)
+- [ ] Panel cliente avanzado (historial pedidos)
+- [ ] Asignación inteligente de rutas
 
 ## 📄 Licencia
 
-Este proyecto fue desarrollado como parte del proyecto formativo del **SENA** (Servicio Nacional de Aprendizaje).
-
-```
-© 2026 AngyGo Proyecto SENA
-```
+Proyecto SENA 2026 - Uso educativo/comercial con atribución.
 
 ---
 
-## 📞 Contacto
+**¡Gracias por usar AngyGo! 🚀**  
+*Desarrollado con ❤️ por el equipo AngyGo*
 
-- **WhatsApp**: +57 304 525 7674
-- **Correo**: angygo916@gmail.com
-- **Ubicación**: Socorro, Santander, Colombia
-
----
-
-<div align="center">
-
-**Desarrollado con ❤️ para la comunidad de Socorro**
-
-¡Gracias por usar AngyGo! 🚴‍♂️
-
-</div>
