@@ -1,14 +1,14 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../../config/conexion.php");
 
 if (!isset($_SESSION["usuario_id"])) {
-    header("Location: login.php");
+    header("Location: ../../public/login.php");
     exit();
 }
 
 if ($_SESSION["rol"] !== "admin") {
-    header("Location: index.php");
+    header("Location: ../../public/index.php");
     exit();
 }
 
@@ -197,9 +197,9 @@ $ultimos = $conexion->query("
             </div>
 
             <div class="buttons">
-                <a href="gestionar_usuarios.php" class="btn btn-primary">👤 Gestionar Usuarios</a>
-                <a href="ver_pedidos_admin.php" class="btn btn-primary">📦 Ver y Asignar Pedidos</a>
-                <a href="logout.php" class="btn btn-danger">🚪 Cerrar Sesión</a>
+                <a href="./gestionar_usuarios.php" class="btn btn-primary">👤 Gestionar Usuarios</a>
+                <a href="./ver_pedidos_admin.php" class="btn btn-primary">📦 Ver y Asignar Pedidos</a>
+                <a href="../../controllers/logout.php" class="btn btn-danger">🚪 Cerrar Sesión</a>
             </div>
 
             <h3 style="margin-top:40px;">📋 Últimos pedidos</h3>

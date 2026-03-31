@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /AngyGo/public/
+    
+    # Permitir acceso directo a archivos que existen
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Redirigir todo a index.php si el archivo no existe
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+DirectoryIndex index.php
+
+# Permitir acceso a todos los archivos
+<FilesMatch "\.(php|html|css|js|jpg|png|gif|svg|ico|webp|eot|ttf|woff|woff2)$">
+    Allow from all
+</FilesMatch>

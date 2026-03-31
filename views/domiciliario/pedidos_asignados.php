@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "conexion.php";
+require_once("../../config/conexion.php");
 
 $domiciliario_id = $_SESSION["usuario_id"] ?? 0;
 
@@ -117,6 +117,13 @@ $resultado = $stmt->get_result();
 <body>
 
     <h2>🚚 Mis Pedidos Asignados</h2>
+
+    <!-- BOTÓN VOLVER AL PANEL -->
+    <a href="panel_domiciliario.php">
+        <button style="margin-bottom:15px; background:#6c757d; color:white;">
+            ⬅ Volver al Panel
+        </button>
+    </a>
 
     <!-- FILTRO -->
     <div class="filtro">

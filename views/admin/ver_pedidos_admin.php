@@ -1,14 +1,14 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../../config/conexion.php");
 
 if (!isset($_SESSION["usuario_id"])) {
-    header("Location: login.php");
+    header("Location: ../../public/login.php");
     exit();
 }
 
 if ($_SESSION["rol"] !== "admin") {
-    header("Location: index.php");
+    header("Location: ../../public/index.php");
     exit();
 }
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["asignar"])) {
             $stmt->execute();
             $stmt->close();
 
-            header("Location: ver_pedidos_admin.php");
+            header("Location: ./ver_pedidos_admin.php");
             exit();
         }
     }

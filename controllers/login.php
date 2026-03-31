@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../config/conexion.php");
 
 $error = "";
 
@@ -42,15 +42,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Redirección por rol
                 switch ($usuario["rol"]) {
                     case "admin":
-                        header("Location: panel_admin.php");
+                        header("Location: ../views/admin/panel_admin.php");
                         break;
 
                     case "domiciliario":
-                        header("Location: panel_domiciliario.php");
+                        header("Location: ../views/domiciliario/panel_domiciliario.php");
                         break;
 
                     default:
-                        header("Location: index.php");
+                        header("Location: ../public/index.php");
                         break;
                 }
 

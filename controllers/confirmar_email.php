@@ -1,5 +1,5 @@
 <?php
-require_once('conexion.php');
+require_once('../config/conexion.php');
 
 $token = $_GET['token'] ?? '';
 if (trim($token) === '') {

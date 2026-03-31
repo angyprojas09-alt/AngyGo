@@ -3,7 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
-require_once('conexion.php');
+require_once('../config/conexion.php');
+require_once('../config/mailer.php');
 
 $message = '';
 $error = '';
@@ -50,7 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
                 $link = $scheme . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/cambiar_password.php?token=' . urlencode($token);
 
-                $message = "Si el correo existe, se envió el enlace de recuperación.";
+                // Enviar correo de recuperación
+                if (enviar_email_recuperacion($correo, $nombre, $link)) {
+                    $message = "✓ Se ha enviado un enlace de recuperación a tu correo.";
+                } else {
+                    error_log("Error enviando email de recuperación a: $correo");
+                    $message = "⚠️ Se generó el token pero hubo un error al enviar el email. Intenta más tarde.";
+                }
             } else {
                 $error = "No existe una cuenta con ese correo.";
                 $stmt->close();

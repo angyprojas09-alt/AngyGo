@@ -3,13 +3,13 @@ session_start();
 
 // Verificar sesión
 if (!isset($_SESSION["usuario_id"])) {
-    header("Location: login.php");
+    header("Location: ../../public/login.php");
     exit();
 }
 
 // Verificar rol
 if ($_SESSION["rol"] !== "domiciliario") {
-    header("Location: index.php");
+    header("Location: ../../public/index.php");
     exit();
 }
 
@@ -73,9 +73,9 @@ $usuario = $_SESSION["nombre"] ?? "Domiciliario";
                 <strong><?php echo htmlspecialchars($usuario); ?></strong>
             </p>
 
-            <a href="pedidos_asignados.php" class="btn">Ver Pedidos Asignados</a>
+            <a href="./pedidos_asignados.php" class="btn">Ver Pedidos Asignados</a>
             <br>
-            <a href="logout.php" class="btn logout">Cerrar Sesión</a>
+            <a href="../../controllers/logout.php" class="btn logout">Cerrar Sesión</a>
         </div>
     </div>
 

@@ -1,164 +1,128 @@
-# 🚴‍♂️ AngyGo - Servicio de Domicilios
+# AngyGo - Plataforma de Domicilios 🚀
 
-## 📱 Descripción del Proyecto
+## 📋 Descripción
+AngyGo es una plataforma web completa de servicios de domicilio desarrollada en **PHP** con **MySQL**. Permite a clientes realizar pedidos de comida rápida, paquetería y compras express, que se guardan en base de datos y se notifican automáticamente por **WhatsApp**. Incluye paneles administrativos para admins y domiciliarios.
 
-**AngyGo** es una aplicación web completa para gestión de servicios de domicilio en Socorro, Santander (Colombia). Permite a clientes realizar pedidos de comida rápida, paquetería y compras express, que se guardan en base de datos y se envían automáticamente por WhatsApp al número del negocio.
-
-Desarrollada con **PHP 8+, MySQL y HTML/CSS/JS puro**. Funciona perfectamente en **XAMPP local** o servidores web compartidos.
-
-**Estado:** ✅ En producción con datos reales (53 pedidos, 9 usuarios).
+**Ubicación:** Socorro, Colombia  
+**WhatsApp Business:** +57 304 525 7674
 
 ## ✨ Características Principales
+- ✅ **Registro/Login Seguro** con confirmación por email y recuperación de contraseña
+- 📱 **Formulario de Pedidos** intuitivo (guardado en DB + WhatsApp auto)
+- 👥 **Sistema de Roles**: Cliente, Admin, Domiciliario
+- 🛠️ **Panel Admin**: Gestión usuarios + ver pedidos
+- 🚴‍♂️ **Panel Domiciliario**: Pedidos asignados
+- 🔐 **Autenticación Completa** (PHP Sessions)
+- 📧 **Emails** de confirmación/reset (PHPMailer)
+- 📊 **Base de Datos Robusta** con estados de pedidos (Pendiente, En camino, Entregado)
 
-- **🔐 Autenticación completa:**
-  - Registro de usuarios con confirmación por email (tokens)
-  - Login seguro con `password_hash()`
-  - Recuperación de contraseña por email
-  - Roles: cliente, admin, domiciliario
+## 🗄️ Estructura de la Base de Datos
+```
+angygo (MySQL/MariaDB)
+├── usuarios (id, nombre, correo, password, rol, fecha_registro)
+├── pedidos (id, nombre, telefono, direccion, producto, cantidad, comentarios, estado, usuario_id, domiciliario_id)
+├── email_confirmations (tokens para verificación)
+└── password_resets (tokens para reset contraseña)
+```
 
-- **📦 Gestión de Pedidos:**
-  - Formulario intuitivo para clientes
-  - Almacenamiento en MySQL (`pedidos` table)
-  - Integración automática con **WhatsApp Business**
-  - Admin puede ver, asignar a domiciliarios y estadísticas
+**Importar:** `database/angygo.sql`
 
-- **👑 Panel Administrador:**
-  - Dashboard con métricas (total, asignados, pendientes)
-  - CRUD usuarios (crear/editar/eliminar)
-  - Vista y asignación de pedidos
-  - Últimos pedidos
+## 🛠️ Instalación y Configuración
 
-- **🛵 Panel Domiciliario:**
-  - Ver pedidos asignados
-  - Fácil expansión
+### Requisitos
+- **XAMPP** (Apache + MySQL + PHP 8.2+)
+- **PHPMailer** (incluido en `config/mailer.php`)
+- Cuenta **Gmail** para emails (configurar en `config/mailer.php`)
 
-- **🎨 Interfaz Moderna:**
-  - Responsive design
-  - Gradientes y animaciones
-  - Imágenes optimizadas (logo, servicios)
-
-- **📊 Base de Datos:**
-  ```
-  - usuarios (id, nombre, correo, password, fecha_registro)
-  - pedidos (id, nombre, telefono, direccion, producto, cantidad, comentarios, fecha)
-  - email_confirmations & password_resets (tokens seguros)
-  ```
-
-## 📸 Capturas de Pantalla
-
-| Cliente (index.php) | panel Domi| Panel Admin |
-|--------------------|--------|-------------|
-| ![Cliente](imagenAngyGo/logo.png) | ![Login](imagenes/panel_domi.jpeg) | ![Admin](imagenes/panel_adm.jpeg) |
-
-
-## 🛠️ Requisitos Previos
-
-- **XAMPP** (Apache + MySQL) o servidor PHP/MySQL
-- **PHP 8.0+**
-- **MySQL 5.7+**
-- Navegador moderno
-
-## 🚀 Instalación Rápida (5 minutos)
-
-1. **Descarga/Coloca archivos:**
-   ```
-   c:/xampp/htdocs/AngyGo/
-   ```
-
-2. **Inicia XAMPP:**
-   ```
-   Apache: START
-   MySQL: START
-   ```
-
-3. **Crea Base de Datos:**
-   - Abre `http://localhost/phpmyadmin`
-   - Crea DB: `angygo`
-   - Importa: `angygo.sql` (incluye datos de prueba)
-
-4. **Configura Conexión (opcional):**
-   Edita `conexion.php` si cambias credenciales MySQL:
+### Pasos
+1. **Clonar/Descargar** el proyecto en `c:/xampp/htdocs/AngyGo`
+2. **Importar DB:** Abrir phpMyAdmin → Importar `database/angygo.sql`
+3. **Configurar Email:** Editar `config/mailer.php` con tus credenciales Gmail:
    ```php
-   $servidor = 'localhost';
-   $usuario_db = 'root';
-   $password_db = ''; // Vacío en XAMPP por defecto
-   $nombre_db = 'angygo';
+   $mail->Username = 'tuemail@gmail.com';
+   $mail->Password = 'tu_app_password';
    ```
+4. **Conexión DB:** `config/conexion.php` (por defecto: root sin password)
+5. **Iniciar XAMPP** (Apache + MySQL)
+6. **Acceder:** `http://localhost/AngyGo/public/`
 
-5. **¡Listo! Abre en navegador:**
-   ```
-   http://localhost/AngyGo/
-   ```
-
-## 👥 Cómo Usar
-
-### 1. **Cliente (Usuario normal)**
+### Usuarios de Prueba
 ```
-1. Registro/login en login.php
-2. index.php → Llena formulario pedido
-3. ¡Se envía por WhatsApp automáticamente!
+Admin: angygo916@gmail.com (rol: admin)
+Cliente: angyprojas09@gmail.com (rol: cliente)
+Domiciliario: camiloan09@gmail.com (rol: domiciliario)
 ```
 
-**Demo Usuario:** 
-- Email: `andrea09@gmail.com`
-- Pass: `123456`
-
-### 2. **Admin**
-```
-Login → panel_admin.php
-- Ver estadísticas
-- Gestionar usuarios (gestionar_usuarios.php)
-- Ver/asignar pedidos (ver_pedidos_admin.php)
-```
-
-**Admin Demo:**
-- Email: `shibucai93@gmail.com`
-- Pass: `123456` (cambiar en producción)
-
-### 3. **Domiciliario**
-```
-Login → panel_domiciliario.php → pedidos_asignados.php
-```
-
-## 📁 Estructura del Proyecto
-
+## 📁 Estructura del Proyecto (MVC)
 ```
 AngyGo/
-├── index.php              # Formulario pedidos cliente
-├── login.php             # Autenticación
-├── registro.php          # Registro usuarios
-├── panel_admin.php       # Dashboard admin
-├── panel_domiciliario.php # Panel delivery
-├── guardar_pedido.php    # Procesar pedidos
-├── conexion.php          # DB connection
-├── angygo.sql            # Base de datos
-├── imagenAngyGo/         # Assets
+├── config/           # Configuraciones (DB, Mailer)
+├── controllers/      # Lógica de negocio (CRUD, Auth)
+├── views/            # Plantillas
+│   ├── admin/        # Dashboard, Usuarios, Pedidos
+│   └── domiciliario/ # Pedidos asignados
+├── public/           # Frontend público
+│   ├── index.php     # Landing + Formulario pedidos
+│   ├── login.php
+│   └── registro.php
+├── database/         # SQL dump
 └── README.md
 ```
 
-## 📞 Contacto & WhatsApp
+## 🎯 Flujo de Usuario
+1. **Cliente:** Registro/Login → Realizar pedido → WhatsApp auto → Seguimiento
+2. **Admin:** Login → Ver/gestionar usuarios y pedidos
+3. **Domiciliario:** Login → Ver pedidos asignados → Actualizar estado
 
-**WhatsApp Negocio:** [+57 304 525 7674](https://wa.me/573045257674)
+## 📱 Demo del Formulario de Pedidos
+![Formulario Pedidos](public/imagenAngyGo/logo.png)
+*(Captura del formulario principal que envía a WhatsApp)*
 
-**Email:** angygo916@gmail.com
+## 🚀 Tecnologías
+- **Backend:** PHP 8+, MySQL/MariaDB
+- **Frontend:** HTML5, CSS3 (Poppins), JavaScript vanilla
+- **Emails:** PHPMailer + Gmail SMTP
+- **Servidor:** XAMPP/Apache
+- **Autenticación:** PHP Password Hash + Sessions + Tokens
 
-**Ubicación:** Socorro - Santander, Colombia
+## 📞 Integración WhatsApp
+Los pedidos se envían automáticamente a WhatsApp Business con formato:
+```
+¡Hola ANGYGO! 👋
+Nombre: Juan Pérez
+Teléfono: 3001234567
+Dirección: Calle 10 #5-22
+Producto: Hamburguesa
+Cantidad: 2
+Comentarios: Sin cebolla
+```
 
-## 🔮 Próximas Mejoras Sugeridas
+## 🔒 Seguridad Implementada
+- Hash de contraseñas (password_hash)
+- Tokens únicos para email/reset (expiran)
+- Protección CSRF básica
+- Sanitización de inputs
+- Prepared statements (parcial)
 
-- [ ] Mapa con Google Maps para direcciones
-- [ ] Notificaciones push/email
-- [ ] Pagos en línea (PayU/MercadoPago)
-- [ ] App móvil (React Native)
-- [ ] Panel cliente avanzado (historial pedidos)
-- [ ] Asignación inteligente de rutas
+## 📈 Estados de Pedidos
+- `Pendiente`
+- `En camino`
+- `Entregado`
+
+## 🤝 Contribuir
+1. Fork el proyecto
+2. Crear branch `feature/xxx`
+3. Commit changes
+4. Pull Request
 
 ## 📄 Licencia
+Proyecto SENA - Uso educativo/comercial con atribución.
 
-Proyecto SENA 2026 - Uso educativo/comercial con atribución.
+## 👨‍💻 Autores
+- **Desarrollador Principal:** Angy Paola Rojas Loza
+- **Contacto:** [angyprojas09@gmail.com](mailto:angyprojas09@gmail.com)
 
 ---
 
-**¡Gracias por usar AngyGo! 🚀**  
-*Desarrollado con ❤️ por el equipo AngyGo*
+**¡Gracias por usar AngyGo! 🚴‍♂️✨**
 

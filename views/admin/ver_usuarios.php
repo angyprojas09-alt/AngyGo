@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../../config/conexion.php");
 
 // Protección
 if (!isset($_SESSION["usuario_id"]) || $_SESSION["rol"] !== "admin") {
-    header("Location: login.php");
+    header("Location: ../../public/login.php");
     exit();
 }
 
@@ -66,7 +66,7 @@ $resultado = $conexion->query($sql);
     <h2 style="text-align:center;">Lista de Usuarios</h2>
 
     <div style="text-align:center; margin-bottom:20px;">
-        <a href="crear_usuario.php" style="background:#27ae60; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">
+        <a href="../../controllers/crear_usuario.php" style="background:#27ae60; color:white; padding:10px 20px; border-radius:6px; text-decoration:none;">
             ➕ Crear Usuario
         </a>
     </div>
@@ -88,8 +88,8 @@ $resultado = $conexion->query($sql);
                 <td><?= $fila["rol"] ?></td>
                 <td>
 
-                    <a href="editar_usuario.php?id=<?= $fila["id"] ?>" class="editar">Editar</a>
-                    <a href="eliminar_usuario.php?id=<?= $fila["id"] ?>" class="eliminar"
+                    <a href="../../controllers/editar_usuario.php?id=<?= $fila["id"] ?>" class="editar">Editar</a>
+                    <a href="../../controllers/eliminar_usuario.php?id=<?= $fila["id"] ?>" class="eliminar"
                         onclick="return confirm('¿Eliminar este usuario?')">
                         Eliminar
                     </a>

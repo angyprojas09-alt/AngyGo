@@ -1,9 +1,5 @@
 <?php
-$conexion = new mysqli("localhost", "root", "", "angygo");
-
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
+require_once("../../config/conexion.php");
 
 /* CAMBIAR ROL */
 if (isset($_POST['cambiar_rol'])) {
@@ -118,13 +114,39 @@ if (isset($_GET['rol']) && $_GET['rol'] != "") {
             background: #007bff;
             color: white;
         }
+
+        .btn-regreso {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-regreso:hover {
+            background: #5a6268;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="container">
-        <h2>👥 Gestionar Usuarios</h2>
+        <div class="header-section">
+            <h2>👥 Gestionar Usuarios</h2>
+            <a href="panel_admin.php" class="btn-regreso">← Volver al Panel</a>
+        </div>
 
         <div class="filtro">
             <form method="GET">

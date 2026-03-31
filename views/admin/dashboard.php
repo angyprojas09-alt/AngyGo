@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../../config/conexion.php");
 
 // 🔐 Verificar si hay sesión activa
 if (!isset($_SESSION["usuario"])) {
-    header("Location: login.php");
+    header("Location: ../../public/login.php");
     exit();
 }
 
@@ -95,8 +95,8 @@ $stmt->close();
         <p><strong>Nombre:</strong> <?php echo htmlspecialchars($nombre); ?></p>
         <p><strong>Correo:</strong> <?php echo htmlspecialchars($usuario["correo"]); ?></p>
 
-        <a href="index.php" class="button home">Ir al Inicio</a>
-        <a href="logout.php" class="button logout">Cerrar Sesión</a>
+        <a href="../../public/index.php" class="button home">Ir al Inicio</a>
+        <a href="../../controllers/logout.php" class="button logout">Cerrar Sesión</a>
     </div>
 
 </body>

@@ -1,5 +1,5 @@
 <?php
-require_once("conexion.php");
+require_once("../config/conexion.php");
 
 $mensaje = "";
 $error = "";
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $stmt->close();
 
-                    header('Location: enviar_token.php?correo=' . urlencode($correo));
+                    header('Location: ./enviar_token.php?correo=' . urlencode($correo));
                     exit();
                 } else {
                     $error = 'Error al registrar: ' . $stmt->error;

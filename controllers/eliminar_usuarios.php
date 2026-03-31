@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../config/conexion.php");
 
 if (!isset($_SESSION["usuario_id"]) || $_SESSION["rol"] !== "admin") {
-    header("Location: login.php");
+    header("Location: ../public/login.php");
     exit();
 }
 
@@ -15,5 +15,5 @@ if (isset($_GET["id"])) {
     $stmt->execute();
 }
 
-header("Location: ver_usuarios.php");
+header("Location: ../views/admin/ver_usuarios.php");
 exit();

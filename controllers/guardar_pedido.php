@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("conexion.php");
+require_once("../config/conexion.php");
 
 header('Content-Type: text/html; charset=UTF-8');
 $conexion->set_charset("utf8mb4");
@@ -10,7 +10,7 @@ $error = "";
 
 // 🔐 Verificar sesión activa
 if (!isset($_SESSION["usuario_id"])) {
-  header("Location: login.php");
+  header("Location: ../public/login.php");
   exit();
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $comentarios = trim($_POST['comentarios'] ?? '');
 
   if ($telefono === '' || $direccion === '' || $producto === '' || $cantidad < 1) {
-    header('Location: index.php?mensaje=error');
+    header('Location: ../public/index.php?mensaje=error');
     exit();
   }
 
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->execute()) {
 
       $lastId = $conexion->insert_id;
-      header("Location: guardar_pedido.php?pedido_id=" . $lastId);
+      header("Location: ./guardar_pedido.php?pedido_id=" . $lastId);
       exit();
     } else {
       $error = "Error al guardar el pedido.";
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $stmt->close();
   $conexion->close();
 } else {
-  header("Location: index.php");
+  header("Location: ../public/index.php");
   exit();
 }
 ?>
@@ -228,15 +228,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
       <div class="btns">
-        <a class="btn btn-primary" href="index.php">Volver al inicio</a>
-        <a class="btn btn-secondary" href="logout.php">Cerrar sesión</a>
+        <a class="btn btn-primary" href="../public/index.php">Volver al inicio</a>
+        <a class="btn btn-secondary" href="./logout.php">Cerrar sesión</a>
       </div>
 
       <div class="small">© 2026 AngyGo. Todos los derechos reservados.</div>
 
       <script>
         (function() {
-          const numeroWhatsApp = "573045257674";
+          const numeroWhatsApp = "3045257674";
 
           let mensaje =
             `¡Hola AngyGo! 👋🏻
@@ -246,7 +246,7 @@ Quiero registrar este pedido:
 
 📞 Teléfono: <?= addslashes($telefono) ?>
 
-📍Dirección: <?= addslashes($direccion) ?>
+📍 Dirección: <?= addslashes($direccion) ?>
 
 📦 Producto: <?= addslashes($producto) ?>
 
@@ -271,7 +271,7 @@ Gracias 🙌🏻`;
       </div>
 
       <div class="btns">
-        <a class="btn btn-primary" href="index.php">Volver</a>
+        <a class="btn btn-primary" href="../public/index.php">Volver</a>
       </div>
 
     <?php endif; ?>

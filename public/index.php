@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once("../config/conexion.php");
 
 // 🔐 Proteger la página
 if (!isset($_SESSION["usuario_id"])) {
@@ -392,7 +393,7 @@ $rol = $_SESSION["rol"] ?? "cliente";
         Bienvenida <?php echo htmlspecialchars($usuario); ?> 👋
       </div>
 
-      <form action="guardar_pedido.php" method="POST" onsubmit="return disableSubmit(this);">
+      <form action="../controllers/guardar_pedido.php" method="POST" onsubmit="return disableSubmit(this);">
         <label for="nombre">Nombre</label>
         <input type="text" id="nombre" name="nombre"
           value="<?php echo htmlspecialchars($usuario); ?>" required>
@@ -425,7 +426,7 @@ $rol = $_SESSION["rol"] ?? "cliente";
       <?php endif; ?>
 
       <div style="text-align:center;">
-        <a class="logout" href="logout.php">Cerrar sesión</a>
+        <a class="logout" href="../controllers/logout.php">Cerrar sesión</a>
       </div>
 
     </div>
@@ -462,8 +463,8 @@ $rol = $_SESSION["rol"] ?? "cliente";
         const cantidad = params.get("cantidad") || "";
         const comentarios = params.get("comentarios") || "";
 
-        // ✅ Número WhatsApp negocio (sin +)
-        const numeroWhatsApp = "3045257674";
+        // ✅ Número WhatsApp negocio (sin +) 
+        const numeroWhatsApp = "573045257674";
 
         let mensaje =
           "¡Hola ANGYGO! 👋🏻\n" +
