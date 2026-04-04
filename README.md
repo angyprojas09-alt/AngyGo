@@ -1,6 +1,6 @@
 # AngyGo - Plataforma de Domicilios 🚀 [![PHP](https://img.shields.io/badge/PHP-8+-777DD6?style=flat&logo=php&logoColor=white)](https://www.php.net/) [![MySQL](https://img.shields.io/badge/MySQL-8.0+-006699?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-**v1.1** (Actualizado Octubre 2024)
+**v1.1** (Actualizado abril 4 2026)
 
 ## 🔄 Últimas Actualizaciones
 - ✅ Mejoras en paneles admin y domiciliario (asignación y seguimiento de pedidos).
@@ -133,4 +133,3 @@ Proyecto SENA - **Uso libre con atribución** a AngyGo.
 
 ---
 
-**¡Gracias por usar AngyGo! 🚀🚴‍♂️**
