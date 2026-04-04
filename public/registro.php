@@ -51,15 +51,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($check) {
 
-            $check->bind_param('s', $correo);
-            $check->execute();
-            $res = $check->get_result();
+            $check->execute([$correo]);
+            $res = $check->fetchAll();
 
-            if ($res && $res->num_rows > 0) {
+            if ($res && count($res) > 0) {
                 $error = 'Ya existe una cuenta con ese correo.';
             }
-
-            $check->close();
         } else {
             $error = 'Error en la verificación de correo.';
         }
@@ -72,11 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, correo, password, rol) VALUES (?, ?, ?, ?)");
 
             if ($stmt) {
-                $stmt->bind_param('ssss', $nombre, $correo, $password, $rol);
 
-                if ($stmt->execute()) {
+                if ($stmt->execute([$nombre, $correo, $password, $rol])) {
+
                     // Obtener ID del usuario registrado
-                    $user_id = $conexion->insert_id;
+                    $user_id = $conexion->lastInsertId();
 
                     // Generar token de confirmación
                     $token = bin2hex(random_bytes(32));
@@ -84,13 +81,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Guardar token en BD
                     $query_token = $conexion->prepare("INSERT INTO email_confirmations (user_id, token, created_at) VALUES (?, ?, NOW())");
                     if ($query_token) {
-                        $query_token->bind_param("is", $user_id, $token);
-                        $query_token->execute();
-                        $query_token->close();
+                        $query_token->execute([$user_id, $token]);
                     }
 
                     // Enviar email de confirmación
                     $enlace = "http://localhost:85/AngyGo/public/confirmar_email.php?token=" . $token;
+
                     if (enviar_email_confirmacion($correo, $nombre, $enlace)) {
                         echo "<script>alert('¡Cuenta creada exitosamente! Por favor revisa tu correo para confirmarla.'); window.location.href='login.php';</script>";
                         exit();
@@ -100,12 +96,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $error = 'Error al guardar los datos.';
                 }
-
-                $stmt->close();
             }
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>

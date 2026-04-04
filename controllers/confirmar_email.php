@@ -2,41 +2,44 @@
 require_once('../config/conexion.php');
 
 $token = $_GET['token'] ?? '';
+
 if (trim($token) === '') {
     $error = 'Token inválido.';
 } else {
+
     $stmt = $conexion->prepare("SELECT id, user_id, expires_at, used FROM email_confirmations WHERE token = ? LIMIT 1");
+
     if ($stmt) {
-        $stmt->bind_param('s', $token);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        if ($res && $res->num_rows > 0) {
-            $row = $res->fetch_assoc();
+
+        $stmt->execute([$token]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+
             if ((int)$row['used'] === 1) {
                 $error = 'Este token ya fue utilizado.';
             } elseif (strtotime($row['expires_at']) < time()) {
                 $error = 'El token expiró.';
             } else {
+
                 // Marcar como usado
                 $u = $conexion->prepare("UPDATE email_confirmations SET used = 1 WHERE id = ?");
                 if ($u) {
-                    $u->bind_param('i', $row['id']);
-                    $u->execute();
-                    $u->close();
+                    $u->execute([$row['id']]);
                 }
 
                 // Asegurar columna email_confirmado en usuarios
                 $colRes = $conexion->query("SHOW COLUMNS FROM usuarios LIKE 'email_confirmado'");
-                if ($colRes && $colRes->num_rows === 0) {
+                $col = $colRes->fetch();
+
+                if (!$col) {
                     $conexion->query("ALTER TABLE usuarios ADD COLUMN email_confirmado TINYINT(1) NOT NULL DEFAULT 0");
                 }
 
                 // Marcar usuario como confirmado
                 $upd = $conexion->prepare("UPDATE usuarios SET email_confirmado = 1 WHERE id = ?");
                 if ($upd) {
-                    $upd->bind_param('i', $row['user_id']);
-                    $upd->execute();
-                    $upd->close();
+                    $upd->execute([$row['user_id']]);
                 }
 
                 $success = true;
@@ -44,14 +47,10 @@ if (trim($token) === '') {
         } else {
             $error = 'Token no encontrado.';
         }
-        $stmt->close();
     } else {
         $error = 'Error en la consulta.';
     }
 }
-
-$conexion->close();
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
