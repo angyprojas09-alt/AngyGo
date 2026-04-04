@@ -5,48 +5,43 @@ require_once("../../config/conexion.php");
 $domiciliario_id = $_SESSION["usuario_id"] ?? 0;
 
 /* ===========================
-   CAMBIAR ESTADO (OPCIÓN 1)
+   CAMBIAR ESTADO (PDO)
 =========================== */
 if (isset($_POST["cambiar_estado"])) {
 
     $pedido_id = $_POST["pedido_id"];
     $nuevo_estado = $_POST["nuevo_estado"];
 
-    $update = $conexion->prepare("UPDATE pedidos SET estado = ? WHERE id = ? AND domiciliario_id = ?");
-    $update->bind_param("sii", $nuevo_estado, $pedido_id, $domiciliario_id);
-    $update->execute();
+    $update = $conexion->prepare(
+        "UPDATE pedidos 
+         SET estado = ? 
+         WHERE id = ? AND domiciliario_id = ?"
+    );
 
-    // Recargar para evitar reenvío de formulario
+    $update->execute([$nuevo_estado, $pedido_id, $domiciliario_id]);
+
     header("Location: pedidos_asignados.php");
     exit();
 }
 
 /* ===========================
-   FILTRO POR ESTADO
+   FILTRO POR ESTADO (PDO)
 =========================== */
 $filtro_estado = $_GET["estado"] ?? "";
 
 $sql = "SELECT * FROM pedidos WHERE domiciliario_id = ?";
 $params = [$domiciliario_id];
-$types = "i";
 
 if (!empty($filtro_estado)) {
     $sql .= " AND estado = ?";
     $params[] = $filtro_estado;
-    $types .= "s";
 }
 
 $stmt = $conexion->prepare($sql);
+$stmt->execute($params);
 
-if (count($params) == 2) {
-    $stmt->bind_param($types, $params[0], $params[1]);
-} else {
-    $stmt->bind_param($types, $params[0]);
-}
-
-$stmt->execute();
-$resultado = $stmt->get_result();
-
+// 🔥 IMPORTANTE: en PDO no existe get_result()
+$resultado = $stmt;
 ?>
 
 
@@ -139,7 +134,7 @@ $resultado = $stmt->get_result();
         </form>
     </div>
 
-    <?php if ($resultado && $resultado->num_rows > 0): ?>
+    <?php if ($resultado && $resultado->rowCount() > 0): ?>
 
         <table>
             <tr>
@@ -152,7 +147,7 @@ $resultado = $stmt->get_result();
                 <th>Acciones</th>
             </tr>
 
-            <?php while ($pedido = $resultado->fetch_assoc()):
+            <?php while ($pedido = $resultado->fetch(PDO::FETCH_ASSOC)):
 
                 $id = $pedido["id"];
                 $cliente = $pedido["nombre"] ?? "";
@@ -161,9 +156,7 @@ $resultado = $stmt->get_result();
                 $cantidad = $pedido["cantidad"] ?? 0;
                 $estado = $pedido["estado"] ?? "Pendiente";
 
-
             ?>
-
                 <tr>
                     <td><?= htmlspecialchars($id) ?></td>
                     <td><?= htmlspecialchars($cliente) ?></td>

@@ -18,57 +18,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         $stmt = $conexion->prepare("SELECT id, nombre FROM usuarios WHERE correo = ? LIMIT 1");
+        $stmt->execute([$correo]);
 
-        if ($stmt) {
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $stmt->bind_param("s", $correo);
-            $stmt->execute();
-            $stmt->store_result();
+        if ($usuario) {
 
-            if ($stmt->num_rows > 0) {
+            $user_id = $usuario['id'];
+            $nombre  = $usuario['nombre'];
 
-                $stmt->bind_result($user_id, $nombre);
-                $stmt->fetch();
-                $stmt->close();
+            // Eliminar tokens anteriores
+            $del = $conexion->prepare("DELETE FROM password_resets WHERE user_id = ?");
+            $del->execute([$user_id]);
 
-                // Eliminar tokens anteriores
-                $del = $conexion->prepare("DELETE FROM password_resets WHERE user_id = ?");
-                $del->bind_param("i", $user_id);
-                $del->execute();
-                $del->close();
+            // Generar token
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', time() + 3600);
 
-                // Generar token
-                $token = bin2hex(random_bytes(32));
-                $expires = date('Y-m-d H:i:s', time() + 3600);
+            $insert = $conexion->prepare(
+                "INSERT INTO password_resets (user_id, token, expires_at) 
+                 VALUES (?, ?, ?)"
+            );
+            $insert->execute([$user_id, $token, $expires]);
 
-                $insert = $conexion->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)");
-                $insert->bind_param("iss", $user_id, $token, $expires);
-                $insert->execute();
-                $insert->close();
+            // Crear enlace
+            $host = $_SERVER['HTTP_HOST'];
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $link = $scheme . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/cambiar_password.php?token=' . urlencode($token);
 
-                // Crear enlace
-                $host = $_SERVER['HTTP_HOST'];
-                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-                $link = $scheme . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/cambiar_password.php?token=' . urlencode($token);
-
-                // Enviar correo de recuperación
-                if (enviar_email_recuperacion($correo, $nombre, $link)) {
-                    $message = "✓ Se ha enviado un enlace de recuperación a tu correo.";
-                } else {
-                    error_log("Error enviando email de recuperación a: $correo");
-                    $message = "⚠️ Se generó el token pero hubo un error al enviar el email. Intenta más tarde.";
-                }
+            // Enviar correo
+            if (enviar_email_recuperacion($correo, $nombre, $link)) {
+                $message = "✓ Se ha enviado un enlace de recuperación a tu correo.";
             } else {
-                $error = "No existe una cuenta con ese correo.";
-                $stmt->close();
+                error_log("Error enviando email de recuperación a: $correo");
+                $message = "⚠️ Se generó el token pero hubo un error al enviar el email.";
             }
         } else {
-            $error = "Error en la base de datos.";
+            $error = "No existe una cuenta con ese correo.";
         }
     }
 }
 
-$conexion->close();
+$conexion = null; // cerrar PDO
 ?>
 <!DOCTYPE html>
 <html lang="es">

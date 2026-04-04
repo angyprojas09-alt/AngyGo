@@ -3,7 +3,7 @@ session_start();
 require_once("../config/conexion.php");
 
 header('Content-Type: text/html; charset=UTF-8');
-$conexion->set_charset("utf8mb4");
+// ❌ $conexion->set_charset("utf8mb4"); → NO se usa en PDO
 
 $ok = false;
 $error = "";
@@ -38,34 +38,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   if ($stmt) {
 
-    $stmt->bind_param("issssis", $usuario_id, $nombre, $telefono, $direccion, $producto, $cantidad, $comentarios);
+    if ($stmt->execute([$usuario_id, $nombre, $telefono, $direccion, $producto, $cantidad, $comentarios])) {
 
-    if ($stmt->execute()) {
-
-      $lastId = $conexion->insert_id;
+      $lastId = $conexion->lastInsertId();
       header("Location: ./guardar_pedido.php?pedido_id=" . $lastId);
       exit();
     } else {
       $error = "Error al guardar el pedido.";
     }
-
-    $stmt->close();
   }
-
-  $conexion->close();
 } elseif (isset($_GET['pedido_id'])) {
 
   $id = (int)$_GET['pedido_id'];
 
   // 🔐 Solo permitir ver pedidos del usuario logueado
   $stmt = $conexion->prepare("SELECT * FROM pedidos WHERE id = ? AND usuario_id = ? LIMIT 1");
-  $stmt->bind_param("ii", $id, $usuario_id);
-  $stmt->execute();
-  $resultado = $stmt->get_result();
+  $stmt->execute([$id, $usuario_id]);
 
-  if ($resultado->num_rows > 0) {
+  $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $pedido = $resultado->fetch_assoc();
+  if ($pedido) {
+
     $ok = true;
 
     $nombre = $pedido['nombre'];
@@ -77,9 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } else {
     $error = "Pedido no encontrado o no autorizado.";
   }
-
-  $stmt->close();
-  $conexion->close();
 } else {
   header("Location: ../public/index.php");
   exit();

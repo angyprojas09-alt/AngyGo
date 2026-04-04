@@ -10,7 +10,8 @@ $token = trim($_GET['token'] ?? $_POST['token'] ?? '');
 if ($token === '') {
     $error = "Token inválido.";
 } else {
-
+    var_dump($conexion);
+    exit;
     $stmt = $conexion->prepare("SELECT id, user_id, expires_at, used FROM password_resets WHERE token = ? LIMIT 1");
     $stmt->bind_param("s", $token);
     $stmt->execute();
@@ -64,7 +65,8 @@ if ($token === '') {
 
     $stmt->close();
 }
-
+var_dump($conexion);
+exit;
 $conexion->close();
 ?>
 <!DOCTYPE html>

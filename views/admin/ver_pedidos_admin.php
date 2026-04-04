@@ -25,9 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["asignar"])) {
         if ($domiciliario_id > 0) {
 
             $stmt = $conexion->prepare("UPDATE pedidos SET domiciliario_id = ? WHERE id = ?");
-            $stmt->bind_param("ii", $domiciliario_id, $pedido_id);
-            $stmt->execute();
-            $stmt->close();
+
+            if ($stmt) {
+                $stmt->execute([$domiciliario_id, $pedido_id]);
+            }
 
             header("Location: ./ver_pedidos_admin.php");
             exit();
@@ -171,7 +172,7 @@ $domiciliarios = $conexion->query($sql_domiciliarios);
                 <th>Asignar</th>
             </tr>
 
-            <?php while ($pedido = $pedidos->fetch_assoc()): ?>
+            <?php while ($pedido = $pedidos->fetch(PDO::FETCH_ASSOC)): ?>
                 <tr>
                     <td><?php echo $pedido["id"]; ?></td>
                     <td><?php echo htmlspecialchars($pedido["cliente_nombre"]); ?></td>
@@ -195,14 +196,18 @@ $domiciliarios = $conexion->query($sql_domiciliarios);
                                 <option value="">Seleccionar</option>
 
                                 <?php
-                                $domiciliarios->data_seek(0);
-                                while ($dom = $domiciliarios->fetch_assoc()):
+                                // 🔥 SOLUCIÓN PDO: traer todos los domiciliarios una sola vez
+                                if (!isset($domiciliarios_lista)) {
+                                    $domiciliarios_lista = $domiciliarios->fetchAll(PDO::FETCH_ASSOC);
+                                }
+
+                                foreach ($domiciliarios_lista as $dom):
                                 ?>
                                     <option value="<?php echo $dom["id"]; ?>"
                                         <?php if ($pedido["domiciliario_id"] == $dom["id"]) echo "selected"; ?>>
                                         <?php echo htmlspecialchars($dom["nombre"]); ?>
                                     </option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
 
                             <button type="submit" name="asignar">Asignar</button>
@@ -210,6 +215,11 @@ $domiciliarios = $conexion->query($sql_domiciliarios);
                     </td>
                 </tr>
             <?php endwhile; ?>
+
+            <button type="submit" name="asignar">Asignar</button>
+            </form>
+            </td>
+            </tr>
 
         </table>
 

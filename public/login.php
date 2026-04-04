@@ -31,25 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $conexion->prepare("SELECT id, nombre, password, rol FROM usuarios WHERE correo = ? LIMIT 1");
 
         if (!$stmt) {
-            die("Error en la consulta: " . $conexion->error);
+            die("Error en la consulta");
         }
 
-        $stmt->bind_param("s", $correo);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
+        $stmt->execute([$correo]);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($resultado->num_rows === 1) {
-
-            $usuario = $resultado->fetch_assoc();
+        if ($usuario) {
 
             if (password_verify($password, $usuario["password"])) {
 
                 // Seguridad extra
                 session_regenerate_id(true);
 
-                // ===============================
-                // GUARDAR SESIÓN CORRECTAMENTE
-                // ===============================
+                // Guardar sesión
                 $_SESSION["usuario_id"] = $usuario["id"];
                 $_SESSION["nombre"]     = $usuario["nombre"];
                 $_SESSION["rol"]        = $usuario["rol"];
@@ -74,8 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             $error = "Usuario no encontrado";
         }
-
-        $stmt->close();
     }
 }
 ?>

@@ -24,19 +24,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
 
         // Verificar si ya existe el correo
+        var_dump($conexion);
+        exit;
         $check = $conexion->prepare("SELECT id FROM usuarios WHERE correo = ? LIMIT 1");
 
         if ($check) {
 
-            $check->bind_param('s', $correo);
-            $check->execute();
-            $res = $check->get_result();
+            $check->execute([$correo]);
+            $res = $check->fetch(PDO::FETCH_ASSOC);
 
-            if ($res && $res->num_rows > 0) {
+            if ($res) {
                 $error = 'Ya existe una cuenta con ese correo.';
             }
-
-            $check->close();
         } else {
             $error = 'Error en la verificación de correo.';
         }
@@ -46,23 +45,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $password = password_hash($password_raw, PASSWORD_DEFAULT);
 
-            $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)");
-
+            var_dump($conexion);
+            exit;
+            $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, correo, password, rol) VALUES (?, ?, ?, ?)");
             if ($stmt) {
 
-                $stmt->bind_param('sss', $nombre, $correo, $password);
-
-                if ($stmt->execute()) {
-
-                    $stmt->close();
+                // ✅ PDO → execute con array
+                if ($stmt->execute([$nombre, $correo, $password])) {
 
                     header('Location: ./enviar_token.php?correo=' . urlencode($correo));
                     exit();
                 } else {
-                    $error = 'Error al registrar: ' . $stmt->error;
+                    $error = 'Error al registrar.';
                 }
-
-                $stmt->close();
             } else {
                 $error = 'Error en la consulta de registro.';
             }

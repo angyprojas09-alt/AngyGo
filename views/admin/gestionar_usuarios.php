@@ -7,29 +7,35 @@ if (isset($_POST['cambiar_rol'])) {
     $nuevo_rol = $_POST['rol'];
 
     $stmt = $conexion->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");
-    $stmt->bind_param("si", $nuevo_rol, $id);
-    $stmt->execute();
-    $stmt->close();
+    if ($stmt) {
+        $stmt->execute([$nuevo_rol, $id]);
+    }
 }
 
 /* ELIMINAR USUARIO */
 if (isset($_GET['eliminar'])) {
     $id = $_GET['eliminar'];
+
     $stmt = $conexion->prepare("DELETE FROM usuarios WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
+    if ($stmt) {
+        $stmt->execute([$id]);
+    }
 }
 
 /* FILTRO */
 $filtro = "";
+
 if (isset($_GET['rol']) && $_GET['rol'] != "") {
+
     $rol = $_GET['rol'];
+
     $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE rol = ?");
-    $stmt->bind_param("s", $rol);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    $stmt->execute([$rol]);
+
+    $resultado = $stmt; // 👈 IMPORTANTE (PDO usa el mismo statement)
+
 } else {
+
     $resultado = $conexion->query("SELECT * FROM usuarios ORDER BY id DESC");
 }
 ?>
@@ -170,7 +176,7 @@ if (isset($_GET['rol']) && $_GET['rol'] != "") {
                 <th>Acciones</th>
             </tr>
 
-            <?php while ($fila = $resultado->fetch_assoc()) { ?>
+            <?php while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) { ?>
                 <tr>
                     <td><?= $fila['id'] ?></td>
                     <td><?= $fila['nombre'] ?></td>

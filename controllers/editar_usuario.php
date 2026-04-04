@@ -8,7 +8,8 @@ if (!isset($_SESSION["usuario_id"]) || $_SESSION["rol"] !== "admin") {
 }
 
 $id = $_GET["id"];
-
+var_dump($conexion);
+exit;
 $stmt = $conexion->prepare("SELECT nombre, correo, rol FROM usuarios WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();

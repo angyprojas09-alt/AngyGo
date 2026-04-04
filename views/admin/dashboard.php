@@ -12,11 +12,8 @@ $nombre = $_SESSION["usuario"];
 
 // Obtener datos completos del usuario
 $stmt = $conexion->prepare("SELECT correo FROM usuarios WHERE nombre = ?");
-$stmt->bind_param("s", $nombre);
-$stmt->execute();
-$resultado = $stmt->get_result();
-$usuario = $resultado->fetch_assoc();
-$stmt->close();
+$stmt->execute([$nombre]);
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

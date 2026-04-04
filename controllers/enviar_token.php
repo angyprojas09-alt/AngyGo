@@ -9,26 +9,31 @@ if ($correo === '') {
     exit();
 }
 
+// ✅ PDO correcto
+var_dump($conexion);
+exit;
 $stmt = $conexion->prepare("SELECT id, nombre FROM usuarios WHERE correo = ? LIMIT 1");
+
 if (!$stmt) {
     header('Location: ../public/registro.php?token_error=2');
     exit();
 }
-$stmt->bind_param('s', $correo);
-$stmt->execute();
-$res = $stmt->get_result();
-if (!$res || $res->num_rows === 0) {
-    $stmt->close();
+
+$stmt->execute([$correo]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
     header('Location: ../public/registro.php?token_error=3');
     exit();
 }
-$user = $res->fetch_assoc();
+
 $user_id = (int)$user['id'];
 $nombre = $user['nombre'];
-$stmt->close();
 
 // Crear tabla de confirmaciones si no existe
-$conexion->query(
+var_dump($conexion);
+exit;
+$conexion->exec(
     "CREATE TABLE IF NOT EXISTS email_confirmations (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
@@ -48,14 +53,17 @@ try {
 
 $expires = date('Y-m-d H:i:s', time() + 86400); // 24h
 
+// ✅ PDO correcto
+var_dump($conexion);
+exit;
 $ins = $conexion->prepare("INSERT INTO email_confirmations (user_id, token, expires_at) VALUES (?, ?, ?)");
+
 if (!$ins) {
     header('Location: registro.php?token_error=4');
     exit();
 }
-$ins->bind_param('iss', $user_id, $token, $expires);
-$ins->execute();
-$ins->close();
+
+$ins->execute([$user_id, $token, $expires]);
 
 // Enviar correo
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';

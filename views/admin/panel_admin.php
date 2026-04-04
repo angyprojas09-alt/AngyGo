@@ -16,17 +16,17 @@ if ($_SESSION["rol"] !== "admin") {
 // ESTADÍSTICAS
 // ===============================
 
-// Total pedidos
+//// Total pedidos
 $total_pedidos = $conexion->query("SELECT COUNT(*) AS total FROM pedidos")
-    ->fetch_assoc()["total"];
+    ->fetch(PDO::FETCH_ASSOC)["total"];
 
 // Pedidos asignados
 $asignados = $conexion->query("SELECT COUNT(*) AS total FROM pedidos WHERE domiciliario_id IS NOT NULL")
-    ->fetch_assoc()["total"];
+    ->fetch(PDO::FETCH_ASSOC)["total"];
 
 // Pedidos pendientes
 $pendientes = $conexion->query("SELECT COUNT(*) AS total FROM pedidos WHERE domiciliario_id IS NULL")
-    ->fetch_assoc()["total"];
+    ->fetch(PDO::FETCH_ASSOC)["total"];
 
 // Últimos 5 pedidos
 $ultimos = $conexion->query("
@@ -211,7 +211,7 @@ $ultimos = $conexion->query("
                     <th>Estado</th>
                 </tr>
 
-                <?php while ($p = $ultimos->fetch_assoc()): ?>
+                <?php while ($p = $ultimos->fetch(PDO::FETCH_ASSOC)): ?>
                     <tr>
                         <td><?php echo $p["id"]; ?></td>
                         <td><?php echo htmlspecialchars($p["nombre"]); ?></td>
