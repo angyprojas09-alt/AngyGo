@@ -9,9 +9,7 @@ $token = trim($_GET['token'] ?? '');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    /* ===========================
-       FORMULARIO 1: SOLICITAR CORREO
-    ============================ */
+
     if (isset($_POST['email_form'])) {
 
         $correo = trim($_POST['correo'] ?? '');
@@ -55,11 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "No encontramos una cuenta con ese correo.";
             }
         }
-    }
-
-    /* ===========================
-       FORMULARIO 2: CAMBIAR PASSWORD
-    ============================ */ elseif (isset($_POST['reset_form'])) {
+    } elseif (isset($_POST['reset_form'])) {
 
         $token = trim($_POST['token'] ?? '');
         $password_new = $_POST['password'] ?? '';
