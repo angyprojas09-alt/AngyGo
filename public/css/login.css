@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0b3d2e, #14532d);
+}
+
+.login-container {
+    background: #f8fafc;
+    padding: 45px 40px;
+    width: 360px;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+.titulo-login {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #1f2937;
+    position: relative;
+}
+
+.titulo-login span {
+    color: #16a34a;
+}
+
+.titulo-login::after {
+    content: "";
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    display: block;
+    margin: 12px auto 0;
+    border-radius: 6px;
+}
+
+.input-group {
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+    background: #f9fafb;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #16a34a;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.error {
+    background: #ffe0e0;
+    color: #c0392b;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    animation: pulse 0.6s ease;
+}
+
+.register-link,
+.forgot-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link a,
+.forgot-link a {
+    text-decoration: none;
+    color: #16a34a;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.register-link a:hover,
+.forgot-link a:hover {
+    text-decoration: underline;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.password-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 38px;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.toggle-password.visible {
+    color: #16a34a;
+}
