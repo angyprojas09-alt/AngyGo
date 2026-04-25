@@ -38,12 +38,64 @@ function validar_email_real($email)
         return $resultado;
     }
 
+    // Verificar registros MX del dominio (validar que el dominio puede recibir correos)
+    if (!checkdnsrr($dominio, 'MX')) {
+        // Si no hay registros MX, intentar con A records como alternativa
+        if (!checkdnsrr($dominio, 'A') && !checkdnsrr($dominio, 'AAAA')) {
+            $resultado['mensaje'] = 'El dominio del email no existe o no puede recibir correos.';
+            return $resultado;
+        }
+    }
+
     $resultado['valido'] = true;
     $resultado['mensaje'] = 'Email válido.';
     return $resultado;
 }
 
-// Función para enviar email de confirmación de registro
+// Función para validar contraseña segura
+function validar_password_segura($password)
+{
+    $resultado = [
+        'valido' => false,
+        'mensaje' => '',
+        'requisitos' => [
+            'longitud' => strlen($password) >= 8,
+            'mayuscula' => preg_match('/[A-Z]/', $password),
+            'minuscula' => preg_match('/[a-z]/', $password),
+            'numero' => preg_match('/[0-9]/', $password),
+            'especial' => preg_match('/[!@#$%^&*()_+\-=\[\]{};:"\'<>,.?\/\\|`~]/', $password)
+        ]
+    ];
+
+    if (!$resultado['requisitos']['longitud']) {
+        $resultado['mensaje'] = 'La contraseña debe tener al menos 8 caracteres.';
+        return $resultado;
+    }
+
+    if (!$resultado['requisitos']['mayuscula']) {
+        $resultado['mensaje'] = 'La contraseña debe contener al menos una mayúscula (A-Z).';
+        return $resultado;
+    }
+
+    if (!$resultado['requisitos']['minuscula']) {
+        $resultado['mensaje'] = 'La contraseña debe contener al menos una minúscula (a-z).';
+        return $resultado;
+    }
+
+    if (!$resultado['requisitos']['numero']) {
+        $resultado['mensaje'] = 'La contraseña debe contener al menos un número (0-9).';
+        return $resultado;
+    }
+
+    if (!$resultado['requisitos']['especial']) {
+        $resultado['mensaje'] = 'La contraseña debe contener al menos un carácter especial (!@#$%^&*()_+-=[]{};:"\'<>,.?/\\|`~).';
+        return $resultado;
+    }
+
+    $resultado['valido'] = true;
+    $resultado['mensaje'] = 'Contraseña válida.';
+    return $resultado;
+}
 function enviar_email_confirmacion($email, $nombre, $enlace_confirmacion)
 {
     $asunto = "Confirmar tu correo - AngyGo";

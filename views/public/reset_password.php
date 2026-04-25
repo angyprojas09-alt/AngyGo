@@ -43,6 +43,9 @@
                         <input type="password" name="password" id="password" required>
                         <button type="button" class="toggle-password" onclick="togglePassword('password')">Mostrar</button>
                     </div>
+                    <small style="display: block; margin-top: 8px; color: #6b7280; font-size: 12px;">
+                        Requisitos: mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial (!@#$%^&*)
+                    </small>
                 </div>
 
                 <div class="input-group">

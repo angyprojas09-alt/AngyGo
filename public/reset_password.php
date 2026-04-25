@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $correo = trim($_POST['correo'] ?? '');
 
         if (empty($correo)) {
-            $error = "introduce tu correo electronico.";
+            $error = "Introduce tu correo electrónico.";
         } else {
 
             $stmt = $conexion->prepare("SELECT id, nombre FROM usuarios WHERE correo = ? LIMIT 1");
@@ -68,38 +68,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Completa todos los campos.";
         } elseif ($password_new !== $password_confirm) {
             $error = "Las contraseñas no coinciden.";
-        } elseif (strlen($password_new) < 6) {
-            $error = "La contraseña debe tener al menos 6 caracteres.";
         } else {
-
-            $check = $conexion->prepare(
-                "SELECT user_id 
-                 FROM password_resets 
-                 WHERE token = ? AND expires_at > NOW() AND used = 0 
-                 LIMIT 1"
-            );
-
-            $check->execute([$token]);
-            $data = $check->fetch(PDO::FETCH_ASSOC);
-
-            if ($data) {
-
-                $user_id = $data['user_id'];
-
-                $password_hashed = password_hash($password_new, PASSWORD_DEFAULT);
-
-                // Actualizar contraseña
-                $update = $conexion->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
-                $update->execute([$password_hashed, $user_id]);
-
-                // Marcar token como usado
-                $mark_used = $conexion->prepare("UPDATE password_resets SET used = 1 WHERE token = ?");
-                $mark_used->execute([$token]);
-
-                $message = "✅ Contraseña actualizada correctamente. Ya puedes <a href='login.php' style='color: #16a34a; font-weight: 600;'>iniciar sesión</a>.";
-                $show_reset_form = false;
+            $validacion_pass = validar_password_segura($password_new);
+            if (!$validacion_pass['valido']) {
+                $error = $validacion_pass['mensaje'];
             } else {
-                $error = "❌ Token inválido o expirado.";
+
+                $check = $conexion->prepare(
+                    "SELECT user_id 
+                     FROM password_resets 
+                     WHERE token = ? AND expires_at > NOW() AND used = 0 
+                     LIMIT 1"
+                );
+
+                $check->execute([$token]);
+                $data = $check->fetch(PDO::FETCH_ASSOC);
+
+                if ($data) {
+
+                    $user_id = $data['user_id'];
+
+                    $password_hashed = password_hash($password_new, PASSWORD_DEFAULT);
+
+                    // Actualizar contraseña
+                    $update = $conexion->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
+                    $update->execute([$password_hashed, $user_id]);
+
+                    // Marcar token como usado
+                    $mark_used = $conexion->prepare("UPDATE password_resets SET used = 1 WHERE token = ?");
+                    $mark_used->execute([$token]);
+
+                    $message = "✅ Contraseña actualizada correctamente. Ya puedes <a href='login.php' style='color: #16a34a; font-weight: 600;'>iniciar sesión</a>.";
+                    $show_reset_form = false;
+                } else {
+                    $error = "❌ Token inválido o expirado.";
+                }
             }
         }
     }

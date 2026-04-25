@@ -6,7 +6,8 @@ $token = $_GET['token'] ?? '';
 if (trim($token) === '') {
     $error = 'Token inválido.';
 } else {
-
+    var_dump($conexion);
+    exit;
     $stmt = $conexion->prepare("SELECT id, user_id, expires_at, used FROM email_confirmations WHERE token = ? LIMIT 1");
 
     if ($stmt) {
