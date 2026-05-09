@@ -14,6 +14,14 @@
 
         <h2 class="titulo">Recuperar <span>Contraseña</span></h2>
 
+        <?php
+        // Definir variables por defecto para evitar errores
+        $error = $error ?? '';
+        $message = $message ?? '';
+        $show_reset_form = $show_reset_form ?? true;
+        $token = $token ?? '';
+        ?>
+
         <?php if ($error): ?>
             <div class="error"><?php echo $error; ?></div>
         <?php endif; ?>
