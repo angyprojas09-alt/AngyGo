@@ -80,7 +80,7 @@ $resultado = $conexion->query($sql);
             <th>Acciones</th>
         </tr>
 
-        <?php while ($fila = $resultado->fetch_assoc()): ?>
+        <?php while ($fila = $resultado->fetch()): ?>
             <tr>
                 <td><?= $fila["id"] ?></td>
                 <td><?= htmlspecialchars($fila["nombre"]) ?></td>
@@ -89,7 +89,7 @@ $resultado = $conexion->query($sql);
                 <td>
 
                     <a href="../../controllers/editar_usuario.php?id=<?= $fila["id"] ?>" class="editar">Editar</a>
-                    <a href="../../controllers/eliminar_usuario.php?id=<?= $fila["id"] ?>" class="eliminar"
+                    <a href="../../controllers/eliminar_usuarios.php?id=<?= $fila["id"] ?>" class="eliminar"
                         onclick="return confirm('¿Eliminar este usuario?')">
                         Eliminar
                     </a>
