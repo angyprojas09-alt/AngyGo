@@ -60,54 +60,7 @@ if (trim($token) === '') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Confirmación de correo - AngyGo</title>
-    <style>
-        body {
-            font-family: Poppins, Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #22c55e, #0f172a);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0
-        }
-
-        .card {
-            background: #fff;
-            padding: 28px;
-            border-radius: 12px;
-            max-width: 520px;
-            width: 96%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-            text-align: center
-        }
-
-        .success {
-            color: #166534;
-            background: #dcfce7;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px
-        }
-
-        .error {
-            color: #9f1239;
-            background: #ffe4e6;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px
-        }
-
-        a.button {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            background: #62c5f3;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700
-        }
-    </style>
+    <link rel="stylesheet" href="css/confirmar_email.css">
 </head>
 
 <body>

@@ -105,14 +105,7 @@ function enviar_email_confirmacion($email, $nombre, $enlace_confirmacion)
     <html>
     <head>
         <meta charset='UTF-8'>
-        <style>
-            body { font-family: Arial, sans-serif; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-            .card { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .header { text-align: center; color: #27ae60; margin-bottom: 20px; }
-            .button { display: inline-block; background: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-            .footer { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
-        </style>
+        <link rel='stylesheet' href='css/email_confirmacion.css'>
     </head>
     <body>
         <div class='container'>
@@ -147,14 +140,7 @@ function enviar_email_recuperacion($email, $nombre, $enlace_recuperacion)
     <html>
     <head>
         <meta charset='UTF-8'>
-        <style>
-            body { font-family: Arial, sans-serif; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-            .card { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .header { text-align: center; color: #e74c3c; margin-bottom: 20px; }
-            .button { display: inline-block; background: #e74c3c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-            .footer { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
-        </style>
+        <link rel='stylesheet' href='css/email_recuperacion.css'>
     </head>
     <body>
         <div class='container'>

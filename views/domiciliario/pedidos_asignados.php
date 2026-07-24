@@ -51,61 +51,7 @@ $resultado = $stmt;
 <head>
     <meta charset="UTF-8">
     <title>Pedidos Asignados</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 20px;
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        th {
-            background: #007bff;
-            color: white;
-            padding: 10px;
-        }
-
-        td {
-            padding: 8px;
-            text-align: center;
-        }
-
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-
-        button {
-            padding: 6px 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .entregado {
-            background: green;
-            color: white;
-        }
-
-        .estado-btn {
-            background: orange;
-            color: white;
-        }
-
-        .filtro {
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/pedidos_asignados.css">
 
 </head>
 
@@ -115,7 +61,7 @@ $resultado = $stmt;
 
     <!-- BOTÓN VOLVER AL PANEL -->
     <a href="panel_domiciliario.php">
-        <button style="margin-bottom:15px; background:#6c757d; color:white;">
+        <button class="back-btn">
             ⬅ Volver al Panel
         </button>
     </a>

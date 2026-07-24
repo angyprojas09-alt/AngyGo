@@ -18,47 +18,7 @@ $resultado = $conexion->query($sql);
 
 <head>
     <title>Usuarios</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f4f4;
-        }
-
-        table {
-            width: 80%;
-            margin: 50px auto;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background: #2c5364;
-            color: white;
-        }
-
-        a {
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-        }
-
-        .editar {
-            background: #3498db;
-            color: white;
-        }
-
-        .eliminar {
-            background: #e74c3c;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="css/ver_usuarios.css">
 </head>
 
 <body>
