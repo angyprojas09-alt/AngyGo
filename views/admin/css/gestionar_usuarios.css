@@ -17,6 +17,10 @@ h2 {
     margin-bottom: 20px;
 }
 
+.table-wrap {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -51,9 +55,14 @@ button {
     color: white;
 }
 
-.btn-eliminar {
+.btn-eliminar-link {
+    display: inline-block;
     background: #dc3545;
     color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 select {
@@ -64,6 +73,12 @@ select {
 .filtro {
     margin-bottom: 15px;
     text-align: right;
+}
+
+.filtro form {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .btn-filtrar {
@@ -98,4 +113,11 @@ select {
     display: flex;
     gap: 5px;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+.empty-state {
+    padding: 20px;
+    color: #666;
+    font-style: italic;
 }

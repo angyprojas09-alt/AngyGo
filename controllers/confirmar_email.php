@@ -6,8 +6,6 @@ $token = $_GET['token'] ?? '';
 if (trim($token) === '') {
     $error = 'Token inválido.';
 } else {
-    var_dump($conexion);
-    exit;
     $stmt = $conexion->prepare("SELECT id, user_id, expires_at, used FROM email_confirmations WHERE token = ? LIMIT 1");
 
     if ($stmt) {
@@ -68,10 +66,10 @@ if (trim($token) === '') {
         <h2>Confirmación de correo</h2>
         <?php if (!empty($success)): ?>
             <div class="success">✅ Tu correo ha sido confirmado correctamente.</div>
-            <a class="button" href="login.php">Ir al login</a>
+            <a class="button" href="../public/login.php">Ir al login</a>
         <?php else: ?>
             <div class="error">❌ <?php echo htmlspecialchars($error ?? 'Ocurrió un error.'); ?></div>
-            <a class="button" href="registro.php">Volver al registro</a>
+            <a class="button" href="../public/registro.php">Volver al registro</a>
         <?php endif; ?>
     </div>
 </body>

@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $insert->execute([$user_id, $token, $expires]);
 
                 // Crear enlace
-                $reset_link = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . "/reset_password.php?token=" . urlencode($token);
+                $reset_link = build_app_url('public/reset_password.php?token=' . urlencode($token));
 
                 if (enviar_email_recuperacion($correo, $usuario['nombre'], $reset_link)) {
                     $message = "✅ Se ha enviado el enlace de recuperación a tu correo. Revisa tu bandeja de entrada.";

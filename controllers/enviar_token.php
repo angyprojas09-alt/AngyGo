@@ -2,6 +2,23 @@
 require_once('../config/conexion.php');
 require_once('../config/mailer.php');
 
+if (!function_exists('build_app_url')) {
+    function build_app_url($path)
+    {
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $script_dir = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
+
+        $base_path = '';
+        if ($script_dir && $script_dir !== '/') {
+            $base_path = str_replace('/public', '', $script_dir);
+            $base_path = str_replace('/controllers', '', $base_path);
+        }
+
+        return $scheme . '://' . $host . $base_path . '/' . ltrim($path, '/');
+    }
+}
+
 // Recibe 'correo' por POST o GET
 $correo = trim($_POST['correo'] ?? $_GET['correo'] ?? '');
 if ($correo === '') {
@@ -10,8 +27,6 @@ if ($correo === '') {
 }
 
 // ✅ PDO correcto
-var_dump($conexion);
-exit;
 $stmt = $conexion->prepare("SELECT id, nombre FROM usuarios WHERE correo = ? LIMIT 1");
 
 if (!$stmt) {
@@ -31,8 +46,6 @@ $user_id = (int)$user['id'];
 $nombre = $user['nombre'];
 
 // Crear tabla de confirmaciones si no existe
-var_dump($conexion);
-exit;
 $conexion->exec(
     "CREATE TABLE IF NOT EXISTS email_confirmations (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,8 +67,6 @@ try {
 $expires = date('Y-m-d H:i:s', time() + 86400); // 24h
 
 // ✅ PDO correcto
-var_dump($conexion);
-exit;
 $ins = $conexion->prepare("INSERT INTO email_confirmations (user_id, token, expires_at) VALUES (?, ?, ?)");
 
 if (!$ins) {
@@ -66,9 +77,7 @@ if (!$ins) {
 $ins->execute([$user_id, $token, $expires]);
 
 // Enviar correo
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$link = $scheme . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/confirmar_email.php?token=' . urlencode($token);
+$link = build_app_url('controllers/confirmar_email.php?token=' . urlencode($token));
 
 $to = $correo;
 $subject = 'Confirma tu correo en AngyGo - ¡Bienvenido!';

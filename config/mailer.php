@@ -96,16 +96,38 @@ function validar_password_segura($password)
     $resultado['mensaje'] = 'Contraseña válida.';
     return $resultado;
 }
+function build_app_url($path)
+{
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $script_dir = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
+
+    $base_path = '';
+    if ($script_dir && $script_dir !== '/') {
+        $base_path = str_replace('/public', '', $script_dir);
+        $base_path = str_replace('/controllers', '', $base_path);
+    }
+
+    return $scheme . '://' . $host . $base_path . '/' . ltrim($path, '/');
+}
+
 function enviar_email_confirmacion($email, $nombre, $enlace_confirmacion)
 {
     $asunto = "Confirmar tu correo - AngyGo";
 
     $mensaje_html = "
     <!DOCTYPE html>
-    <html>
+    <html lang='es'>
     <head>
         <meta charset='UTF-8'>
-        <link rel='stylesheet' href='css/email_confirmacion.css'>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .card { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .header { text-align: center; color: #27ae60; margin-bottom: 20px; }
+            .button { display: inline-block; background: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
+        </style>
     </head>
     <body>
         <div class='container'>
@@ -137,10 +159,17 @@ function enviar_email_recuperacion($email, $nombre, $enlace_recuperacion)
 
     $mensaje_html = "
     <!DOCTYPE html>
-    <html>
+    <html lang='es'>
     <head>
         <meta charset='UTF-8'>
-        <link rel='stylesheet' href='css/email_recuperacion.css'>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .card { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .header { text-align: center; color: #e74c3c; margin-bottom: 20px; }
+            .button { display: inline-block; background: #e74c3c; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
+        </style>
     </head>
     <body>
         <div class='container'>
@@ -169,7 +198,21 @@ function enviar_email_recuperacion($email, $nombre, $enlace_recuperacion)
 // Función para enviar email (genérica)
 function enviar_email($destinatario, $asunto, $mensaje_html)
 {
-    // Por ahora retorna true para que funcione sin Gmail
-    // Once user provides Gmail credentials, we'll implement it
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: no-reply@angygo.local\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
+
+    if (!function_exists('mail')) {
+        error_log('La función mail() no está disponible en este entorno.');
+        return true;
+    }
+
+    $enviado = @mail($destinatario, $asunto, $mensaje_html, $headers);
+
+    if ($enviado === false) {
+        error_log('No se pudo enviar el correo a: ' . $destinatario);
+    }
+
     return true;
 }

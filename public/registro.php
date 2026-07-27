@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     // Validar que el email sea real (no temporal)
     elseif (!($validacion_email = validar_email_real($correo))['valido']) {
-        $error = 'Error: ' . $validacion_email['error'];
+        $error = 'Error: ' . ($validacion_email['mensaje'] ?? 'No se pudo validar el correo.');
     }
     // Validar contraseña mínima
     elseif (strlen($password_raw) < 6) {
@@ -78,14 +78,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Generar token de confirmación
                     $token = bin2hex(random_bytes(32));
 
-                    // Guardar token en BD
-                    $query_token = $conexion->prepare("INSERT INTO email_confirmations (user_id, token, created_at) VALUES (?, ?, NOW())");
+                    // Crear tabla de confirmaciones si no existe
+                    $conexion->exec(
+                        "CREATE TABLE IF NOT EXISTS email_confirmations (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            user_id INT NOT NULL,
+                            token VARCHAR(128) NOT NULL,
+                            expires_at DATETIME NOT NULL,
+                            used TINYINT(1) DEFAULT 0,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+                    );
+
+                    // Guardar token en BD con fecha de expiración
+                    $expires_at = date('Y-m-d H:i:s', time() + 86400);
+                    $query_token = $conexion->prepare("INSERT INTO email_confirmations (user_id, token, expires_at, used, created_at) VALUES (?, ?, ?, 0, NOW())");
                     if ($query_token) {
-                        $query_token->execute([$user_id, $token]);
+                        $query_token->execute([$user_id, $token, $expires_at]);
                     }
 
                     // Enviar email de confirmación
-                    $enlace = "http://localhost:85/AngyGo/public/confirmar_email.php?token=" . $token;
+                    $enlace = build_app_url('controllers/confirmar_email.php?token=' . urlencode($token));
 
                     if (enviar_email_confirmacion($correo, $nombre, $enlace)) {
                         echo "<script>alert('¡Cuenta creada exitosamente! Por favor revisa tu correo para confirmarla.'); window.location.href='login.php';</script>";
