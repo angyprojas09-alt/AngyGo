@@ -1,37 +1,42 @@
 <?php
-session_start();
-// Siempre usa ../ para salir de la carpeta vistas
-require_once("../config/conexion.php"); 
+require_once __DIR__ . "/../../config/conexion.php";
 
-if (!isset($_SESSION["rol"]) || $_SESSION["rol"] !== "admin") {
-    header("Location: ../login.php");
-    exit();
-}
-
+/* CAMBIAR ROL */
 if (isset($_POST['cambiar_rol'])) {
     $id = $_POST['id'];
     $nuevo_rol = $_POST['rol'];
 
     $stmt = $conexion->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");
-    $stmt->execute([$nuevo_rol, $id]);
+    if ($stmt) {
+        $stmt->execute([$nuevo_rol, $id]);
+    }
 }
 
-
+/* ELIMINAR USUARIO */
 if (isset($_GET['eliminar'])) {
     $id = $_GET['eliminar'];
+
     $stmt = $conexion->prepare("DELETE FROM usuarios WHERE id = ?");
-    $stmt->execute([$id]);
+    if ($stmt) {
+        $stmt->execute([$id]);
+    }
 }
 
 /* FILTRO */
 $filtro = "";
+
 if (isset($_GET['rol']) && $_GET['rol'] != "") {
+
     $rol = $_GET['rol'];
+
     $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE rol = ?");
     $stmt->execute([$rol]);
-    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $resultado = $stmt; // 👈 IMPORTANTE (PDO usa el mismo statement)
+
 } else {
-    $resultado = $conexion->query("SELECT * FROM usuarios ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+
+    $resultado = $conexion->query("SELECT * FROM usuarios ORDER BY id DESC");
 }
 ?>
 
@@ -115,13 +120,39 @@ if (isset($_GET['rol']) && $_GET['rol'] != "") {
             background: #007bff;
             color: white;
         }
+
+        .btn-regreso {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-regreso:hover {
+            background: #5a6268;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="container">
-        <h2>👥 Gestionar Usuarios</h2>
+        <div class="header-section">
+            <h2>👥 Gestionar Usuarios</h2>
+            <a href="panel_admin.php" class="btn-regreso">← Volver al Panel</a>
+        </div>
 
         <div class="filtro">
             <form method="GET">
@@ -145,7 +176,7 @@ if (isset($_GET['rol']) && $_GET['rol'] != "") {
                 <th>Acciones</th>
             </tr>
 
-            <?php foreach ($resultado as $fila) { ?>
+            <?php while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) { ?>
                 <tr>
                     <td><?= $fila['id'] ?></td>
                     <td><?= $fila['nombre'] ?></td>
